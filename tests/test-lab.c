@@ -221,6 +221,24 @@ void test_largeList(void)
     free(testData);
 }
 
+void test_rapidInsertDelete(void)
+{
+    list_t *lst = NULL;
+    lst = list_init(destroy_data, compare_to);
+    void *data = alloc_data(27);
+    for(int i =0; i < 1000; i++) {
+        list_add(lst, data);
+        list_remove_index(lst, 0);
+    }
+    //ensure after many insertions and deletions that size is maintained
+    TEST_ASSERT_TRUE(lst->size == 0);
+    //ensure the head has proper pointers after insertions and deletions
+    TEST_ASSERT_TRUE(lst->head->next == lst->head);
+    TEST_ASSERT_TRUE(lst->head->prev == lst->head);
+    list_destroy(&lst);
+    free(data);
+}
+
 int main(void) {
 UNITY_BEGIN();
 RUN_TEST(test_create_destroy);
@@ -235,5 +253,6 @@ RUN_TEST(test_indexOf0);
 RUN_TEST(test_indexOf3);
 RUN_TEST(test_notInList);
 RUN_TEST(test_largeList);
+RUN_TEST(test_rapidInsertDelete);
 return UNITY_END();
 }
