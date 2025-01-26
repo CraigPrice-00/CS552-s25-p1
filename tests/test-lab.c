@@ -205,6 +205,22 @@ int idx = list_indexof(lst_, data);
 TEST_ASSERT_EQUAL_INT64(-1, idx);
 free(data);
 }
+
+void test_largeList(void) 
+{
+    list_t *lst2 = NULL;
+    lst2 = list_init(destroy_data, compare_to);
+    for (int i = 0; i < 500; i++)
+    {
+        list_add(lst2, alloc_data(i));
+    }
+    void *testData = alloc_data(0);
+    int idx = list_indexof(lst2,testData);
+    TEST_ASSERT_TRUE(idx == 499);
+    list_destroy(&lst2);
+    free(testData);
+}
+
 int main(void) {
 UNITY_BEGIN();
 RUN_TEST(test_create_destroy);
@@ -218,5 +234,6 @@ RUN_TEST(test_removeAll);
 RUN_TEST(test_indexOf0);
 RUN_TEST(test_indexOf3);
 RUN_TEST(test_notInList);
+RUN_TEST(test_largeList);
 return UNITY_END();
 }
