@@ -206,6 +206,8 @@ TEST_ASSERT_EQUAL_INT64(-1, idx);
 free(data);
 }
 
+//this tests large lists to ensure
+//list integrity is maintained
 void test_largeList(void) 
 {
     list_t *lst2 = NULL;
@@ -221,6 +223,8 @@ void test_largeList(void)
     free(testData);
 }
 
+//this tests rapid insertions and deletions
+//to ensure integrity of list is maintained
 void test_rapidInsertDelete(void)
 {
     list_t *lst = NULL;
@@ -239,6 +243,43 @@ void test_rapidInsertDelete(void)
     free(data);
 }
 
+//this tests edge conditions of deletions and indexes with larger lists
+void test_edgeConditions(void) {
+    list_t *lst = NULL;
+    lst = list_init(destroy_data, compare_to);
+    for(int i =0; i < 1000; i++) {
+        list_add(lst, alloc_data(999-i));
+    }
+
+    //ensure the furthest index is deleted
+    void* data = list_remove_index(lst,999);
+    int idx = list_indexof(lst, data);
+    TEST_ASSERT_EQUAL_INT64(-1, idx);
+    free(data);
+
+    //ensure the size is consistent
+    TEST_ASSERT_TRUE(lst->size == 999);
+
+    //ensure we can't remove index 999 again
+    TEST_ASSERT_TRUE(list_remove_index(lst,999) == NULL);
+
+    list_destroy(&lst);
+}
+
+//this test is to repeatedly create and destroy the list with some amount of members.
+void test_repeatCreateDestroy(void) {
+    list_t* lst = NULL;
+    for (size_t i = 0; i < 537; i++) {
+        lst = list_init(destroy_data,compare_to);
+        for (size_t j = 0; j < i; j++) {
+            list_add(lst,alloc_data(j));
+        }
+        TEST_ASSERT_TRUE(lst->size == i);
+        list_destroy(&lst);
+        TEST_ASSERT_TRUE(lst == NULL);
+    }
+}
+
 int main(void) {
 UNITY_BEGIN();
 RUN_TEST(test_create_destroy);
@@ -254,5 +295,7 @@ RUN_TEST(test_indexOf3);
 RUN_TEST(test_notInList);
 RUN_TEST(test_largeList);
 RUN_TEST(test_rapidInsertDelete);
+RUN_TEST(test_edgeConditions);
+RUN_TEST(test_repeatCreateDestroy);
 return UNITY_END();
 }
