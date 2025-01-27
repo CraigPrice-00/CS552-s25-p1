@@ -20,15 +20,14 @@ int (*compare_to)(const void *, const void *)) {
 }
 
 void list_destroy(list_t **list) {
-    list_t* listToDestroy = *list;
-    node_t* currentNode = listToDestroy->head->next;
-    while (listToDestroy->compare_to(currentNode,listToDestroy->head)) {
+    node_t* currentNode = (*list)->head->next;
+    while ((*list)->compare_to(currentNode,(*list)->head)) {
         node_t* temp = currentNode->next;
-        listToDestroy->destroy_data(currentNode->data);
+        (*list)->destroy_data(currentNode->data);
         free(currentNode);
         currentNode = temp;
     }
-    free(listToDestroy->head);
+    free((*list)->head);
     free(*list);
     *list = NULL;
 }
@@ -66,7 +65,7 @@ int list_indexof(list_t *list, void *data) {
     node_t* currentNode = list->head->next;
     int currentIndex = 0;
     while (list->compare_to(currentNode, list->head)) {
-        if (list->compare_to(currentNode->data, data) == 0) {
+        if (!list->compare_to(currentNode->data, data)) {
             return currentIndex;
         }
         else {
