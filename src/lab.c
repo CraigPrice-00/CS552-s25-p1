@@ -56,13 +56,15 @@ void list_destroy(list_t **list) {
     *list = NULL;
 }
 
-//Code Review: I added a comment to this function and memory safety on malloc
+//Code Review: I added a comment to this function and memory safety on malloc and the list to add to
 /* list_add: this function adds some data to a list
    parameters:
    list_t *list: a pointer to the list to add to
    void *data: the data to add
 */
 list_t *list_add(list_t *list, void *data) {
+    if (list == NULL) { return NULL; }
+
     node_t* newNode = malloc(sizeof(node_t));
     if (!newNode) { return NULL; }
 
@@ -75,14 +77,14 @@ list_t *list_add(list_t *list, void *data) {
     return list;
 }
 
-//Code Review: I added a comment to this function
+//Code Review: I added a comment to this function and memory safety on the list
 /* list_remove_index: this function removes the node at a specified index and returns the data
    parameters:
    list_t *list: a pointer to the list to remove from
    size_t index: the index to remove from the list
 */
 void* list_remove_index(list_t *list, size_t index) {
-    if (index >= list->size) {
+    if (index >= list->size || list == NULL) {
         return NULL;
     }
     else {
@@ -99,13 +101,16 @@ void* list_remove_index(list_t *list, size_t index) {
     }
 }
 
-//Code Review: I added a comment to this function
+//Code Review: I added a comment to this function and memory safety on the list
 /* list_indexof: this function finds the first occurrence of a specified data and returns the index
    parameters:
    list_t *list: a pointer to the list to check
    void *data: the data to find the index of
 */
 int list_indexof(list_t *list, void *data) {
+    if (list == NULL) { 
+        return -1; 
+    }
     node_t* currentNode = list->head->next;
     int currentIndex = 0;
     while (list->compare_to(currentNode, list->head)) {
