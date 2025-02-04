@@ -101,14 +101,14 @@ void* list_remove_index(list_t *list, size_t index) {
     }
 }
 
-//Code Review: I added a comment to this function and memory safety on the list
+//Code Review: I added a comment to this function and memory safety on the list and data
 /* list_indexof: this function finds the first occurrence of a specified data and returns the index
    parameters:
    list_t *list: a pointer to the list to check
    void *data: the data to find the index of
 */
 int list_indexof(list_t *list, void *data) {
-    if (list == NULL) { 
+    if (list == NULL || data == NULL) { 
         return -1; 
     }
     node_t* currentNode = list->head->next;
